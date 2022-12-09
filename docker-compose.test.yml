@@ -1,0 +1,21 @@
+version: "3.4"
+services:
+    api:
+        build:
+            context: ./
+            target: "production-stage"
+        image: ali/express:4.x
+        container_name: apfn-stores-api-test
+        restart: unless-stopped
+        ports:
+            - 4001:${APP_PORT}
+        volumes:
+            - ./:/app
+            - /app/node_modules
+        env_file:
+            - .env.test
+
+networks:
+    default:
+        external: true
+        name: webproxy
