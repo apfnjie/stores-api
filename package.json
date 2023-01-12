@@ -17,10 +17,12 @@
         "@types/express": "^4.17.14",
         "@types/sequelize": "^4.28.14",
         "bcrypt": "^5.1.0",
+        "bcrypt-nodejs": "^0.0.3",
         "express": "^4.18.2",
         "sequelize": "^6.26.0"
     },
     "devDependencies": {
+        "@types/bcrypt-nodejs": "^0.0.31",
         "@types/cors": "^2.8.13",
         "@types/jest": "^29.2.4",
         "@types/node": "^18.11.12",
