@@ -2,7 +2,7 @@ import { Result } from "../../../shared/core/Result";
 import { Entity } from "../../../shared/domain/Entity";
 import { UniqueEntityID } from "../../../shared/domain/UniqueEntityID";
 
-export class UserId extends Entity<any> {
+export class AccountId extends Entity<any> {
     private constructor(id?: UniqueEntityID) {
         super(null, id);
     }
@@ -11,7 +11,7 @@ export class UserId extends Entity<any> {
         return this._id;
     }
 
-    public static create(id?: UniqueEntityID): Result<UserId> {
-        return Result.ok<UserId>(new UserId(id));
+    public static create(id?: UniqueEntityID): Result<AccountId> {
+        return Result.ok<AccountId>(new AccountId(id));
     }
 }

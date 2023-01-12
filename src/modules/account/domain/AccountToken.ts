@@ -3,12 +3,12 @@ import { Guard } from "../../../shared/core/Guard";
 import { Result } from "../../../shared/core/Result";
 import { ValueObject } from "../../../shared/domain/ValueObject";
 
-interface UserTokenProps {
+interface Props {
     value?: string;
 }
 
-export class UserToken extends ValueObject<UserTokenProps> {
-    private constructor(props: UserTokenProps) {
+export class AccountToken extends ValueObject<Props> {
+    private constructor(props: Props) {
         super(props);
     }
 
@@ -16,7 +16,7 @@ export class UserToken extends ValueObject<UserTokenProps> {
         return this.props.value!;
     }
 
-    public static create(value?: string): Result<UserToken> {
+    public static create(value?: string): Result<AccountToken> {
         let token: string;
         if (value) {
             token = value;
@@ -27,9 +27,9 @@ export class UserToken extends ValueObject<UserTokenProps> {
 
         const guardResult = Guard.againstAtLeast(5, token);
         if (guardResult.isFailure) {
-            return Result.fail<UserToken>(guardResult.getErrorValue());
+            return Result.fail<AccountToken>(guardResult.getErrorValue());
         }
 
-        return Result.ok<UserToken>(new UserToken({ value: token }));
+        return Result.ok<AccountToken>(new AccountToken({ value: token }));
     }
 }
