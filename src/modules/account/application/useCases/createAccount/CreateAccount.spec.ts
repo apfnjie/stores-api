@@ -1,3 +1,4 @@
+import { AppError } from "../../../../../shared/core/AppError";
 import { IAccountRepo } from "../../repo/IAccountRepo";
 import { CreateAccountErrors } from "./CreateAccountErrors";
 import { CreateAccountRequest } from "./CreateAccountRequest";
@@ -44,6 +45,35 @@ describe("CreateAccountUseCase", () => {
             expect(result.value).toBeInstanceOf(
                 CreateAccountErrors.AccountAlreadyExists
             );
+        });
+
+        it("Should fail if account failed to save", async () => {
+            accountRepo.exist = jest
+                .fn()
+                .mockImplementation(async (email: any) => false);
+            accountRepo.save = jest
+                .fn()
+                .mockImplementation(async (account: any) => {
+                    throw new Error("DB Error");
+                });
+            useCase = new CreateAccountUseCase(accountRepo);
+            const result = await useCase.execute(dto);
+
+            expect(result.isLeft()).toBeTruthy();
+            expect(result.value).toBeInstanceOf(AppError.UnexpectedError);
+        });
+
+        it("Should create account", async () => {
+            accountRepo.exist = jest
+                .fn()
+                .mockImplementation(async (email: any) => false);
+            accountRepo.save = jest
+                .fn()
+                .mockImplementation(async (account: any) => void 0);
+            useCase = new CreateAccountUseCase(accountRepo);
+            const result = await useCase.execute(dto);
+
+            expect(result.isRight()).toBeTruthy();
         });
     });
 });
