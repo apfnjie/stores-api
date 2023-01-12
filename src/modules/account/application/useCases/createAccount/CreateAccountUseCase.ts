@@ -5,6 +5,7 @@ import { Account } from "../../../domain/Account";
 import { AccountName } from "../../../domain/AccountName";
 import { Email } from "../../../domain/Email";
 import { IAccountRepo } from "../../repo/IAccountRepo";
+import { CreateAccountErrors } from "./CreateAccountErrors";
 import { CreateAccountRequest } from "./CreateAccountRequest";
 import { CreateAccountResponse } from "./CreateAccountResponse";
 
@@ -29,6 +30,16 @@ export class CreateAccountUseCase
         const dtoResult = Result.combine([nameOrError, emailOrError]);
         if (dtoResult.isFailure) {
             return left(Result.fail<any>(dtoResult.getErrorValue()));
+        }
+
+        email = emailOrError.getValue();
+        name = nameOrError.getValue();
+
+        const exists = await this._accountRepo.exist(email);
+        if (exists) {
+            return left(
+                new CreateAccountErrors.AccountAlreadyExists(request.email)
+            );
         }
         throw new Error("Unimplemented error");
     }

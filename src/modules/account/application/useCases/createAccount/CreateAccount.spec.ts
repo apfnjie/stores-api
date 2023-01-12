@@ -1,4 +1,5 @@
 import { IAccountRepo } from "../../repo/IAccountRepo";
+import { CreateAccountErrors } from "./CreateAccountErrors";
 import { CreateAccountRequest } from "./CreateAccountRequest";
 import { CreateAccountUseCase } from "./CreateAccountUseCase";
 
@@ -24,5 +25,25 @@ describe("CreateAccountUseCase", () => {
 
         const result = await useCase.execute(dto);
         expect(result.isLeft()).toBeTruthy();
+    });
+
+    describe("Name and email are valid", () => {
+        let dto: CreateAccountRequest;
+        beforeEach(() => {
+            dto = { name: "Ali", email: "ali@test.com" };
+        });
+
+        it("Should fail if account already exists", async () => {
+            accountRepo.exist = jest
+                .fn()
+                .mockImplementation(async (email: any) => true);
+            useCase = new CreateAccountUseCase(accountRepo);
+            const result = await useCase.execute(dto);
+
+            expect(result.isLeft()).toBeTruthy();
+            expect(result.value).toBeInstanceOf(
+                CreateAccountErrors.AccountAlreadyExists
+            );
+        });
     });
 });
