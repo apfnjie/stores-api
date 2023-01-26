@@ -1,4 +1,10 @@
+import DOMPurify from "isomorphic-dompurify";
+
 export class TextUtil {
+    public static sanitize(unsafeText: string): string {
+        return DOMPurify.sanitize(unsafeText);
+    }
+
     public static stripCountryCodeFromPhoneNumber(phoneNumber: string): string {
         const trimmedPhoneNumber = phoneNumber.replace(/\D/g, "").slice(-7);
         return trimmedPhoneNumber;

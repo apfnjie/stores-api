@@ -2,40 +2,37 @@ import * as bcrypt from "bcrypt-nodejs";
 import { Result } from "../../../shared/core/Result";
 import { ValueObject } from "../../../shared/domain/ValueObject";
 
-interface EmailVerificationTokenProps {
-    token: string;
-    expiry: Date;
+interface Props {
+    token?: string;
+    expiry?: Date;
 }
 
-export class EmailVerificationToken extends ValueObject<EmailVerificationTokenProps> {
+export class EmailVerificationToken extends ValueObject<Props> {
     private static tokenLifeSpan = 6;
 
-    private constructor(props: EmailVerificationTokenProps) {
+    private constructor(props: Props) {
         super(props);
     }
 
-    get token(): string {
+    get token(): string | undefined {
         return this.props.token;
     }
 
-    get expiryDate(): Date {
+    get expiryDate(): Date | undefined {
         return this.props.expiry;
     }
 
     get tokenIsExpired(): boolean {
         const now = new Date();
-        return now > this.props.expiry;
+        return now > this.props.expiry!;
     }
 
-    public static create(rawToken?: string): Result<EmailVerificationToken> {
-        if (rawToken) {
+    public static create(props: Props): Result<EmailVerificationToken> {
+        if (props.token) {
             try {
-                const props: EmailVerificationTokenProps = JSON.parse(rawToken);
+                const properties: Props = JSON.parse(props.token);
                 return Result.ok<EmailVerificationToken>(
-                    new EmailVerificationToken({
-                        ...props,
-                        expiry: new Date(props.expiry),
-                    })
+                    new EmailVerificationToken(props)
                 );
             } catch (error) {
                 return Result.fail<EmailVerificationToken>(
